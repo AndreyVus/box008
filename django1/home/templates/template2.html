@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+	<meta charset="UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+	<title>KBW Smart Box</title>
+	{% load static %}
+	<link href="{% static "home/bootstrap.min.css" %}" rel="stylesheet" />
+	<script>
+		function sendData(Nr, Tat, Wert) {
+			let formData = new FormData();
+			formData.set('csrfmiddlewaretoken', "{{ csrf_token }}");
+			formData.set('Nr', Nr);
+			formData.set('Tat', Tat);
+			formData.set('Wert', Wert);
+			fetch('/', { method: 'POST', body: formData });
+		}
+	</script>
+	<script src="{% static "home/bootstrap.min.js" %}"></script>
+</head>
+<body>
+	<table class="table table-bordered table-responsive table-hover text-center">
+		<thead>
+		<tr class="h4"><th colspan="6">Aufgabenmanagement</th></tr>
+		<tr class="h5"><td>N</td><td>Aktiv</td><td>Job-Name</td><td>Periode, s</td>
+			<td colspan="2"><button class="btn btn-success" onclick="window.location.href = 'add';">add job</button></td>
+		</tr>
+		</thead>
+		<tbody>
+		{% for row in all_items %}
+		<tr>
+			<td>{{ forloop.counter }}</td>
+			<td><input type="checkbox" onchange="sendData({{row.id}},'Berechtigen',this.checked);"
+			{% if row.Berechtigen == True %}
+				checked
+			{% endif %}
+			></td>
+			<td><input type="text" data-ms-editor="true" spellcheck="false" onchange="sendData({{row.id}},'Name',this.value);" value="{{row.Name}}"></td>
+			<td><input type="number" min="1" step="1" onchange="sendData({{row.id}},'Periode',this.value);" value="{{row.Periode}}"></td>
+			<td><button class="btn btn-primary" onclick="window.location.href='edit?Nr={{row.id}}';">edit</button></td>
+			<td><button class="btn btn-danger" onclick="if(confirm('Are you sure ?')){window.location.href='del?Nr={{row.id}}'};">X</button></td>
+		</tr>
+		{% endfor %}
+		</tbody>
+	</table>
+</body>
+</html>
