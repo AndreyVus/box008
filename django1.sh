@@ -19,11 +19,14 @@ systemctl status django1.service
 echo '[Unit]
 Description=Django task
 After=network.target
+Requires=django1.service
 
 [Service]
 Type=simple
 WorkingDirectory=/home/kbwiot/django1
 ExecStart=python tasks.py
+RestartSec = 15
+Restart = on-failure
 
 [Install]
 WantedBy=multi-user.target
