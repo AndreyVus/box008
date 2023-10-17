@@ -1,42 +1,16 @@
 #!/usr/bin/python
 
-from os.path import isfile
 import requests
 import subprocess
 import syslog
 import sqlite3
 import time
-
-
-settings = {
-    "SW Versionen": "01.01",
-    "Seriennummer": "008",
-    "token": "http://thingsboard.kbw-cloud.de/api/v1/box008/telemetry",
-    "wifi": {
-        "FB-Gast": "Fierthbauer930807!",
-        "GastTest": "sch1ll3r",
-        "KBWIIOT": "Kbwiot2022!",
-        "Schi01": "sch1ll3r",
-        "matrixSCI": "dirkjuliasch1ll3r",
-        "NETFMB": "7M8b1ck73",
-        "Besucher": "Willkommen!"
-    }
-}
-
-
-# init WLAN #################################
-def wlan_init(settings):
-    for ssid, passw in settings['wifi'].items():
-        # wenn Box keine ssid.nmconnection hat, der in settings.ini gibt,
-        if not isfile(f"/etc/NetworkManager/system-connections/{ssid}.nmconnection"):
-            # dann schreiben
-            subprocess.run(['nmcli', 'con', 'add', 'ifname', 'wlan0', 'con-name', f'{ssid}', 'type', 'wifi',
-                            'ssid', f'{ssid}', 'ipv4.route-metric', '150', 'wifi-sec.key-mgmt', 'wpa-psk',
-                            'wifi-sec.psk', f'{passw}'])
+import yaml
 
 
 if __name__ == '__main__':
-    wlan_init(settings) # netze und Kennworts
+    with open("../settings.yaml") as file:
+        settings = yaml.safe_load(file)
     while True:
         # get joblist from db
         with sqlite3.connect('db.sqlite3') as conn:
