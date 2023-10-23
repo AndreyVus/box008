@@ -37,7 +37,7 @@ def hat(datei, ssid, passw):
 
 if __name__ == '__main__':
     try:
-        with open("settings.yaml") as file:
+        with open("/home/kbwiot/settings.yaml") as file:
             wifi = yaml.safe_load(file)['wifi']
         for datei in set(nmcli_c()).difference(set(wifi.keys())):
             nmcli_del(datei)
