@@ -10,8 +10,7 @@ ExecStart=/bin/bash -c "source venv/bin/activate && ./manage.py runserver 0:8000
 
 [Install]
 WantedBy=multi-user.target
-'>django1.service
-mv django1.service /etc/systemd/system/
+'>/etc/systemd/system/django1.service
 systemctl enable django1.service
 systemctl start django1.service
 systemctl status django1.service
@@ -30,8 +29,7 @@ Restart = on-failure
 
 [Install]
 WantedBy=multi-user.target
-'>tasks.service
-mv tasks.service /etc/systemd/system/
+'>/etc/systemd/system/tasks.service
 systemctl enable tasks.service
 systemctl start tasks.service
 systemctl status tasks.service

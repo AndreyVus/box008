@@ -2,6 +2,14 @@ from django.shortcuts import render, redirect
 from .models import home1Item
 
 
+def einstellungen(request):
+    item = home2Item.objects.get(id=1)
+    if request.method == 'POST':
+        item.Einstellungen = request.POST['Einstellungen'].encode('utf-8')
+        item.save()
+    return render(request, 'template1.html', {"Einstellungen": item})
+
+
 def home(request):
     if request.method == 'POST':
         item = home1Item.objects.get(id=request.POST['Nr'])

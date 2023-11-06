@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+	<meta charset="UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+	<title>KBW Smart Box</title>
+	{% load static %}
+	<link href="{% static "home/bootstrap.min.css" %}" rel="stylesheet" />
+	<script src="{% static "home/bootstrap.min.js" %}"></script>
+</head>
+<body>
+	<form class="card m-3" action="/" method="POST">
+		{% csrf_token %}
+		<div class="input-group">
+			<div class="input-group-prepend">
+				<span class="input-group-text">Settings.yaml</span>
+			</div>
+			<input type=hidden name="settings" value="skript">
+			<div class="input-group-append">
+				<a class="btn btn-danger" href="/">Cancel</a>
+				<input class="btn btn-success" type="submit" value="Save">
+			</div>
+		</div>
+		<div class="card-body">
+			<textarea autofocus
+				class="form-control"
+				data-ms-editor="true"
+				maxlength="65000"
+				name="Wert"
+				spellcheck="false">{{settings}}</textarea>
+		</div>
+	</form>
+
+	<script>
+		window.onload = function() {
+			let textarea = document.querySelector('textarea');
+			textarea.rows = Math.max(1, textarea.value.split('\n').length);
+		}
+
+		document.querySelector('textarea').addEventListener('input', function() {
+			this.style.height = 'auto';
+			this.style.height = this.scrollHeight + 'px';
+		}, false);
+	</script>
+</body>
+</html>

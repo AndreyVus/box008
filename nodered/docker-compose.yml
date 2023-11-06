@@ -1,0 +1,40 @@
+version: '3.7'
+services:
+  nodered:
+    image: nodered/node-red
+    environment:
+      - TZ=Europe/Berlin
+    ports:
+      - "1880:1880"
+    networks:
+      - node-red-net
+    volumes:
+      - node-red-data:/data
+#      - /sys/class/leds/LED1/brightness:/home/kbwiot/nodered/LED1
+#      - /sys/class/leds/LED2/brightness:/home/kbwiot/nodered/LED2
+#      - /sys/class/leds/BUZZER/brightness:/home/kbwiot/nodered/BUZZER
+##      - /sys/bus/iio\:device0/in_voltage0_raw:/home/kbwiot/nodered/AI0
+##      - /sys/bus/iio\:device0/in_voltage1_raw:/home/kbwiot/nodered/AI1
+##      - /sys/bus/iio\:device0/in_voltage2_raw:/home/kbwiot/nodered/AI2
+##      - /sys/bus/iio\:device0/in_voltage3_raw:/home/kbwiot/nodered/AI3
+#      - /sys/class/gpio/gpio18/value:/home/kbwiot/nodered/DI0
+#      - /sys/class/gpio/gpio19/value:/home/kbwiot/nodered/DI1
+#      - /sys/class/gpio/gpio20/value:/home/kbwiot/nodered/DI2
+#      - /sys/class/gpio/gpio21/value:/home/kbwiot/nodered/DI3
+#      - /sys/class/gpio/gpio22/value:/home/kbwiot/nodered/DO0
+#      - /sys/class/gpio/gpio23/value:/home/kbwiot/nodered/DO1
+#      - /sys/class/gpio/gpio24/value:/home/kbwiot/nodered/DO2
+#      - /sys/class/gpio/gpio25/value:/home/kbwiot/nodered/DO3
+#      - /sys/class/gpio/gpio500/value:/home/kbwiot/nodered/DIO0_in
+#      - /sys/class/gpio/gpio501/value:/home/kbwiot/nodered/DIO1_in
+#      - /sys/class/gpio/gpio502/value:/home/kbwiot/nodered/DIO2_in
+#      - /sys/class/gpio/gpio503/value:/home/kbwiot/nodered/DIO3_in
+#      - /sys/class/gpio/gpio496/value:/home/kbwiot/nodered/DIO0_out
+#      - /sys/class/gpio/gpio497/value:/home/kbwiot/nodered/DIO1_out
+#      - /sys/class/gpio/gpio498/value:/home/kbwiot/nodered/DIO2_out
+#      - /sys/class/gpio/gpio499/value:/home/kbwiot/nodered/DIO3_out
+volumes:
+  node-red-data:
+networks:
+  node-red-net:
+#

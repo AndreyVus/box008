@@ -7,3 +7,7 @@ class home1Item(models.Model):
 	Periode = models.PositiveIntegerField(default=1)
 	start = models.PositiveIntegerField(default=1)
 	skript = models.BinaryField(max_length=65000)
+
+
+class home2Item(models.Model):
+	Einstellungen = models.BinaryField(max_length=65000)
