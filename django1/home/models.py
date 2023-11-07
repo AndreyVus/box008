@@ -10,4 +10,4 @@ class home1Item(models.Model):
 
 
 class home2Item(models.Model):
-	Einstellungen = models.BinaryField(max_length=65000)
+	Einstellungen = 'Einstellungen'#models.BinaryField(max_length=65000)

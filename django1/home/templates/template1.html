@@ -10,7 +10,14 @@
 	<script src="{% static "home/bootstrap.min.js" %}"></script>
 </head>
 <body>
-	<form class="card m-3" action="/" method="POST">
+	<nav>
+		<div>KBWBox</div>
+		<ul class="nav flex-column">
+			<li class="nav-item">Tasks</li>
+			<li class="nav-item">Settings</li>
+		</ul>
+	</nav>
+	<form class="card" action="/" method="POST">
 		{% csrf_token %}
 		<div class="input-group">
 			<div class="input-group-prepend">
@@ -28,10 +35,9 @@
 				data-ms-editor="true"
 				maxlength="65000"
 				name="Wert"
-				spellcheck="false">{{settings}}</textarea>
+				spellcheck="false">settings</textarea>
 		</div>
 	</form>
-
 	<script>
 		window.onload = function() {
 			let textarea = document.querySelector('textarea');

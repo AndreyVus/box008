@@ -26,7 +26,7 @@ def DIO(x, value):
 
 
 def LED_RED(value):
-	with open('/sys/class/leds/LED1/brightness', 'w') as f:
+	with open('/sys/devices/platform/leds/leds/LED1/brightness', 'w') as f:
 		f.write(value)
 	#with open('/sys/class/leds/LED1/brightness') as f:
 	#	ans = f.read(1) != '0'
@@ -34,7 +34,7 @@ def LED_RED(value):
 
 
 def LED_GREEN(value):
-	with open('/sys/class/leds/LED2/brightness', 'w') as f:
+	with open('/sys/devices/platform/leds/leds/LED2/brightness', 'w') as f:
 		f.write(value)
 	#with open('/sys/class/leds/LED2/brightness') as f:
 	#	ans = f.read(1) != '0'
@@ -42,7 +42,7 @@ def LED_GREEN(value):
 
 
 def BEEP(value):
-	with open('/sys/class/leds/BUZZER/brightness', 'w') as f:
+	with open('/sys/devices/platform/leds/leds/BUZZER/brightness', 'w') as f:
 		f.write(value)
 	#with open('/sys/class/leds/BUZZER/brightness') as f:
 	#	ans = f.read(1) != '0'
@@ -50,7 +50,7 @@ def BEEP(value):
 
 
 def AI(x):
-	with open(f'/sys/bus/iio\:device0/in_voltage{x}_raw') as f:
+	with open(f'/sys/bus/iio/devices/iio:device0/in_voltage{x}_raw') as f:
 		ans = f.readline()
 	return float(ans) / 2816
 
@@ -79,7 +79,7 @@ try:
 			f.write('out')
 	# Skalierung #####################################
 	# 28160 raw = 10V --> faktor = 1/2816
-	with open('/sys/bus/i2c/devices/0-006c/iio:device0/in_voltage_sampling_frequency', 'w') as f:
+	with open('/sys/bus/iio/devices/iio:device0/in_voltage_sampling_frequency', 'w') as f:
 		f.write('15')
 	# mqtt-subscribe #################################
 	mqttc = mqtt.Client()
