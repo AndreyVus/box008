@@ -13,7 +13,7 @@ while True:
 	# get joblist from db
 	with sqlite3.connect('db.sqlite3') as conn:
 		c = conn.cursor()
-		c.execute('SELECT id, Name, Periode, start, skript FROM home_home1Item WHERE Berechtigen = 1;')
+		c.execute('SELECT id, Name, Periode, start, skript FROM db1 WHERE Berechtigen = 1;')
 		joblist = {
 			Nr: {'Name': Name, 'Periode': Periode, 'start': start, 'skript': skript}
 			for (Nr, Name, Periode, start, skript) in c.fetchall()
@@ -43,7 +43,7 @@ while True:
 			c = conn.cursor()
 			for Nr, values in joblist.items():
 				c.execute(
-					'UPDATE home_home1Item SET start=? WHERE id=?;', (values['start'], Nr)
+					'UPDATE db1 SET start=? WHERE id=?;', (values['start'], Nr)
 				)
 	else:
 		time.sleep(60)
