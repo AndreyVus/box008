@@ -1,0 +1,23 @@
+sudo apt install influxdb
+
+sudo systemctl unmask influxdb
+sudo systemctl enable influxdb
+sudo systemctl start influxdb
+
+
+influx
+
+create database inverters
+use inverters
+
+create user telegraf with password 'telegraf'
+grant all on inverters to telegraf
+create user grafana with password 'grafana'
+grant read on inverters to grafana
+
+show databases
+show users
+show grants for telegraf
+show grants for grafana
+
+quit

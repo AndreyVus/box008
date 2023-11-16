@@ -7,13 +7,16 @@ import sqlite3
 import time
 import yaml
 
-with open('/home/kbwiot/settings.yaml') as file:
-	token = yaml.safe_load(file)['token']
+
+with sqlite3.connect('db.sqlite3') as conn:
+	c=conn.cursor()
+	c.execute('SELECT Einstellungen FROM home_db2 WHERE id=1;')
+	token = yaml.safe_load(c.fetchone()[0].decode())['token']
 while True:
 	# get joblist from db
 	with sqlite3.connect('db.sqlite3') as conn:
 		c = conn.cursor()
-		c.execute('SELECT id, Name, Periode, start, skript FROM db1 WHERE Berechtigen = 1;')
+		c.execute('SELECT id, Name, Periode, start, skript FROM home_db1 WHERE Berechtigen = 1;')
 		joblist = {
 			Nr: {'Name': Name, 'Periode': Periode, 'start': start, 'skript': skript}
 			for (Nr, Name, Periode, start, skript) in c.fetchall()

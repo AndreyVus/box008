@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+	<meta charset="UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+	<title>KBW Smart Box</title>
+	{% load static %}
+	<link rel="stylesheet" href="{% static 'style.css' %}">
+</head>
+<body style="grid:1fr/auto 1fr;">
+	<div style="grid:repeat(3,auto) 1fr/auto;">
+		<img src="{% static 'logo.png' %}">
+		<a href="/">Tasks</a>
+		<a href="/settings">Settings</a>
+		<br>
+	</div>
+	<form action="/settings/" method="POST" style="grid:auto 1fr/1fr;">
+		<div style="grid:auto/1fr 6em 6em">
+			<div style="font-size:2em;color:white;background-color:#7B7979;">Settings.yaml</div>
+			<a style="background-color:#d35;" href="/settings">Cancel</a>
+			<button style="background-color:#2b4;" type="submit">Save</button>
+		</div>
+		<textarea name="Einstellungen" autofocus data-ms-editor="true" spellcheck="false" maxlength="65000"
+			>{{Einstellungen}}</textarea>
+	{% csrf_token %}</form>
+	<script>
+		window.onload = function() {
+			let textarea = document.querySelector('textarea');
+			textarea.rows = Math.max(1, textarea.value.split('\n').length);
+		}
+		document.querySelector('textarea').addEventListener('input', function() {
+			this.style.height = 'auto';
+			this.style.height = this.scrollHeight + 'px';
+		}, false);
+	</script>
+</body>
+</html>

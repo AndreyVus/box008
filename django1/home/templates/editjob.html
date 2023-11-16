@@ -6,36 +6,25 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 	<title>KBW Smart Box</title>
 	{% load static %}
-	<style type="text/css">
-		* {font-family:Arial,Helvetica,sans-serif;font-size:1em;}
-		a {
-			cursor:pointer;padding:8px;
-			border-radius:0.5em;border:1px solid gray;
-			color:white;background-color:#00ADEF;
-			text-decoration:none;text-align:center;
-			box-shadow: 1px 1px 5px #000;
-		}
-		a:hover{filter:brightness(110%);border:1px solid white;}
-	</style>
+	<link rel="stylesheet" href="{% static 'style.css' %}">
 </head>
-<body style="display:grid;gap:8px;grid:auto/auto 1fr;min-height:90vh;">
-	<div style="display:grid;gap:8px;grid:auto auto auto 1fr/auto;">
+<body style="grid:1fr/auto 1fr;">
+	<div style="grid:repeat(3,auto) 1fr/auto;">
 		<img src="{% static 'logo.png' %}">
 		<a href="/">Tasks</a>
 		<a href="/settings">Settings</a>
-		<br/>
+		<br>
 	</div>
-	<form action="/" method="POST" style="display:grid;gap:8px;grid:auto 1fr/1fr;">
-		<div style="display:grid;gap:8px;grid:auto/1fr 6em 6em;">
-			<input type="text" readonly value="{{Name}}" style="padding:8px;background-color:#7B7979;color:white;">
+	<form action="/" method="POST" style="grid:auto 1fr/1fr;">
+		<div style="grid:auto/1fr 6em 6em;">
+			<div style="font-size:2em;color:white;background-color:#7B7979;">{{Name}}</div>
 			<input type=hidden name="Nr" value="{{Nr}}">
 			<input type=hidden name="Tat" value="skript">
-			<span style="display:none;">{% csrf_token %}</span>
 			<a style="background-color:#d35;" href="/">Cancel</a>
-			<a style="background-color:#2b4;" onclick="submit();">Save</a>
+			<button type="submit" style="background-color:#2b4;">Save</button>
 		</div>
 		<textarea name="Wert" autofocus data-ms-editor="true" spellcheck="false" maxlength="65000">{{skript}}</textarea>
-	</form>
+	{% csrf_token %}</form>
 	<script>
 		window.onload = function() {
 			let textarea = document.querySelector('textarea');
