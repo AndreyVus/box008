@@ -1,5 +1,4 @@
 #!/usr/bin/python
-
 import requests
 import subprocess
 import syslog
@@ -11,7 +10,7 @@ import yaml
 with sqlite3.connect('db.sqlite3') as conn:
 	c=conn.cursor()
 	c.execute('SELECT Einstellungen FROM home_db2 WHERE id=1;')
-	token = yaml.safe_load(c.fetchone()[0].decode())['token']
+	ThingsBoardToken = yaml.safe_load(c.fetchone()[0])['ThingsBoardToken']
 while True:
 	# get joblist from db
 	with sqlite3.connect('db.sqlite3') as conn:
@@ -36,7 +35,7 @@ while True:
 						syslog.syslog(syslog.LOG_WARNING, f"tasks.py: {job['Name']}, {e}")
 						data = {job['Name']: 'error'}
 					# send json to ThingsBoard
-					response = requests.post(token, data=data, timeout=5)
+					response = requests.post(ThingsBoardToken, data=data, timeout=5)
 					if response.status_code != 200:
 						syslog.syslog(syslog.LOG_WARNING, f'tasks.py: Error sending telemetry {response.status_code}')
 			# positive pause bis nächstes job

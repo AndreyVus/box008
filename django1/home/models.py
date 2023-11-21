@@ -6,8 +6,8 @@ class db1(models.Model):
 	Name = models.CharField(max_length=50)
 	Periode = models.PositiveIntegerField(default=1)
 	start = models.PositiveIntegerField(default=1)
-	skript = models.BinaryField(max_length=65000)
+	skript = models.TextField(max_length=65000)
 
 
 class db2(models.Model):
-	Einstellungen = models.BinaryField(max_length=65000)
+	Einstellungen = models.TextField(max_length=65000)

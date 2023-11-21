@@ -1,8 +1,13 @@
-sudo apt install influxdb
+sudo apt install influxdb influxdb-client
 
 sudo systemctl unmask influxdb
 sudo systemctl enable influxdb
 sudo systemctl start influxdb
+
+sudo apt reinstall influxdb influxdb-client
+
+sudo pip install influxdb
+
 
 
 influx

@@ -1,7 +1,7 @@
 #!/usr/bin/python
-
 import os
 import paho.mqtt.client as mqtt
+import subprocess
 import syslog
 import time
 
@@ -28,25 +28,31 @@ def DIO(x, value):
 def LED_RED(value):
 	with open('/sys/devices/platform/leds/leds/LED1/brightness', 'w') as f:
 		f.write(value)
-	#with open('/sys/class/leds/LED1/brightness') as f:
-	#	ans = f.read(1) != '0'
-	#return ans
+
+
+# with open('/sys/class/leds/LED1/brightness') as f:
+#	ans = f.read(1) != '0'
+# return ans
 
 
 def LED_GREEN(value):
 	with open('/sys/devices/platform/leds/leds/LED2/brightness', 'w') as f:
 		f.write(value)
-	#with open('/sys/class/leds/LED2/brightness') as f:
-	#	ans = f.read(1) != '0'
-	#return ans
+
+
+# with open('/sys/class/leds/LED2/brightness') as f:
+#	ans = f.read(1) != '0'
+# return ans
 
 
 def BEEP(value):
 	with open('/sys/devices/platform/leds/leds/BUZZER/brightness', 'w') as f:
 		f.write(value)
-	#with open('/sys/class/leds/BUZZER/brightness') as f:
-	#	ans = f.read(1) != '0'
-	#return ans
+
+
+# with open('/sys/class/leds/BUZZER/brightness') as f:
+#	ans = f.read(1) != '0'
+# return ans
 
 
 def AI(x):
@@ -60,9 +66,19 @@ def on_connect(client, userdata, flags, rc):
 
 
 def on_message(client, userdata, message):
-	LED_GREEN(f'{message.payload.decode()}')
+	m = f'{message.payload.decode()}'
+	LED_GREEN(m)
+	if wv:
+		if m == '1':
+			subprocess.run(
+				'if ping 1.1.1.1 -c 1 -W 5 -I wlan0 || ping 1.1.1.1 -c 1 -W 5 -I eth0 || ping 1.1.1.1 -c 1 -W 5 -I eth1; then systemctl stop wvdial; fi',
+				shell=True, stdout=subprocess.DEVNULL
+			)
+		else:
+			subprocess.run('systemctl restart wvdial', shell=True, stdout=subprocess.DEVNULL)
 
 
+wv = os.path.isfile('/etc/wvdial.conf')
 try:
 	# init io ##########################################
 	for x in [18, 19, 20, 21, 500, 501, 502, 503]:  # DI

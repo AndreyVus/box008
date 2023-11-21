@@ -7,7 +7,16 @@
 	<title>KBW Smart Box</title>
 	{% load static %}
 	<link rel="stylesheet" href="{% static 'style.css' %}">
-	<script src="{% static 'script.js' %}"></script>
+	<script>
+		function sendData(Nr, Tat, Wert) {
+			let formData = new FormData();
+			formData.set('csrfmiddlewaretoken', "{{ csrf_token }}");
+			formData.set('Nr', Nr);
+			formData.set('Tat', Tat);
+			formData.set('Wert', Wert);
+			fetch('/', { method: 'POST', body: formData });
+		}
+	</script>
 </head>
 <body style="grid:1fr/auto 1fr;">
 	<div style="grid:repeat(3,auto) 1fr/auto;">

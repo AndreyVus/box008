@@ -7,13 +7,18 @@ def einstellungen(request):
 	item = db2.objects.get(id=1)
 	if request.method == 'POST':
 		try:
-			d1 = yaml.safe_load(request.POST['Einstellungen'])
-			[d1.setdefault(k, None) for k in ['token','General','Solar','wifi']]
-			item.Einstellungen = yaml.dump(d1, default_flow_style=False).encode('utf-8')
-		except:
-			item.Einstellungen = b'Fehler'
+			r = request.POST['Einstellungen']
+			d1 = yaml.safe_load(r)
+			[d1.setdefault(k, None) for k in ['ThingsBoardToken','General','Solar','wifi']]
+			with open('/home/kbwiot/test-r.txt','w') as f:
+				f.write(r)
+			with open('/home/kbwiot/test-d1.txt','w') as f:
+				f.write(yaml.dump(d1, default_flow_style=False, allow_unicode=True))
+			item.Einstellungen = yaml.dump(d1, default_flow_style=False, allow_unicode=True)
+		except Exception as e:
+			item.Einstellungen = e
 		item.save()
-	return render(request, 'settings.html', {"Einstellungen": item.Einstellungen.decode('utf8')})
+	return render(request, 'settings.html', {"Einstellungen": item.Einstellungen})
 
 
 def home(request):
@@ -29,7 +34,7 @@ def home(request):
 			item.Periode = request.POST['Wert']
 			item.start = 1
 		elif Tat == 'skript':
-			item.skript = request.POST['Wert'].encode('utf-8')
+			item.skript = request.POST['Wert']
 		item.save()
 	return render(request, 'tasks.html', {
 		'all_items': db1.objects.all(),
@@ -51,5 +56,5 @@ def editItem(request):
 	if request.method == 'GET':
 		Nr = request.GET['Nr']
 		item = db1.objects.get(id=Nr)
-		return render(request, 'editjob.html', {'Nr': Nr, 'Name': item.Name, 'skript': item.skript.decode('utf8')})
+		return render(request, 'editjob.html', {'Nr': Nr, 'Name': item.Name, 'skript': item.skript})
 	#return redirect('/')

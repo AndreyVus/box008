@@ -3,6 +3,7 @@ import cryptocode
 import re
 import subprocess
 import syslog
+import sqlite3
 import yaml
 
 
@@ -36,8 +37,10 @@ def hat(datei, ssid, passw):
 
 
 try:
-	with open('/home/kbwiot/settings.yaml') as file:
-		wifi = yaml.safe_load(file)['wifi']
+	with sqlite3.connect('/home/kbwiot/django1/db.sqlite3') as conn:
+		c=conn.cursor()
+		c.execute('SELECT Einstellungen FROM home_db2 WHERE id=1;')
+		wifi = yaml.safe_load(c.fetchone()[0].decode())['wifi']
 	for datei in set(nmcli_c()).difference(set(wifi.keys())):
 		nmcli_del(datei)
 	for datei in nmcli_c():
