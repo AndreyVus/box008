@@ -1,7 +1,9 @@
 #!/bin/python
 import cryptocode
+import os
 import re
 import subprocess
+import sys
 import syslog
 import sqlite3
 import yaml
@@ -36,22 +38,44 @@ def hat(datei, ssid, passw):
 		return []
 
 
-try:
-	with sqlite3.connect('/home/kbwiot/django1/db.sqlite3') as conn:
-		c=conn.cursor()
-		c.execute('SELECT Einstellungen FROM home_db2 WHERE id=1;')
-		wifi = yaml.safe_load(c.fetchone()[0].decode())['wifi']
-	for datei in set(nmcli_c()).difference(set(wifi.keys())):
-		nmcli_del(datei)
-	for datei in nmcli_c():
-		flag = True
-		for ssid, passw in wifi.items():
-			if hat(datei, ssid, decode(passw)):
-				flag = False
-				break
-		if flag:
+def start():
+	if not os.path.exists(link):
+		subprocess.run(["ln", "-s", os.path.realpath(__file__), link])
+
+
+def stop():
+	if os.path.exists(link):
+		subprocess.run(["rm", link])
+
+
+def run():
+	try:
+		with sqlite3.connect('/home/kbwiot/django1/db.sqlite3') as conn:
+			c=conn.cursor()
+			c.execute('SELECT Einstellungen FROM home_db2 WHERE id=1;')
+			wifi = yaml.safe_load(c.fetchone()[0])['wifi']
+		for datei in set(nmcli_c()).difference(set(wifi.keys())):
 			nmcli_del(datei)
-	for ssid in set(wifi.keys()).difference(set(nmcli_c())):
-		nmcli_add(ssid, decode(wifi[ssid]))
-except Exception as e:
-	syslog.syslog(syslog.LOG_WARNING, f'KbwWlan.py: {e}')
+		for datei in nmcli_c():
+			flag = True
+			for ssid, passw in wifi.items():
+				if hat(datei, ssid, decode(passw)):
+					flag = False
+					break
+			if flag:
+				nmcli_del(datei)
+		for ssid in set(wifi.keys()).difference(set(nmcli_c())):
+			nmcli_add(ssid, decode(wifi[ssid]))
+	except Exception as e:
+		syslog.syslog(syslog.LOG_WARNING, f'KbwWlan.py: {e}')
+
+
+if __name__ == '__main__':
+	link = '/etc/cron.daily/kbwwlan.py'
+	args = sys.argv[1:]
+	if 'start' in args:
+		start()
+	elif 'stop' in args:
+		stop()
+	else:
+		run()

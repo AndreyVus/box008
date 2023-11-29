@@ -31,7 +31,7 @@
 			<div class="c">N</div>
 			<div class="c">Aktiv</div>
 			<div class="c">Job-Name</div>
-			<div class="c">Periode, s</div>
+			<div class="c">Periode, ms</div>
 			<a href="/add" style="background-color:#2b4;">add job</a>
 			{% for row in all_items %}
 			<div class="c">{{forloop.counter}}</div>
@@ -41,7 +41,7 @@
 			{% endif %}
 			>
 			<input type="text" data-ms-editor="true" spellcheck="false" onchange="sendData({{row.id}},'Name',this.value);" value="{{row.Name}}">
-			<input type="number" min="1" step="1" onchange="sendData({{row.id}},'Periode',this.value);" value="{{row.Periode}}">
+			<input type="number" min="100" step="50" onchange="sendData({{row.id}},'Periode',this.value);" value="{{row.Periode}}">
 			<div style="grid:auto/1fr 1fr;">
 				<a href="edit?Nr={{row.id}}">edit</a>
 				<a href="del?Nr={{row.id}}" style="background-color:#d35;">X</a>
