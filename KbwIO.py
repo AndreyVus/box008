@@ -66,7 +66,7 @@ def on_message(client, userdata, message):
 	if wv:
 		if m == '1':
 			subprocess.run(
-				'if ping 1.1.1.1 -c 1 -W 5 -I wlan0 || ping 1.1.1.1 -c 1 -W 5 -I eth0 || ping 1.1.1.1 -c 1 -W 5 -I eth1; then systemctl stop wvdial; fi',
+				'if ping 1.1.1.1 -c 1 -W 5 -I wlan0 || ping 1.1.1.1 -c 1 -W 5 -I eth0; then systemctl stop wvdial; fi',
 				shell=True, stdout=subprocess.DEVNULL
 			)
 		else:
@@ -127,9 +127,9 @@ def run():
 		mqttc.on_connect = on_connect
 		mqttc.on_message = on_message
 		mqttc.connect_async('localhost')
+		mqttc.loop_start()
 		# puls blinker ###################################
 		while True:
-			mqttc.loop_start()
 			LED_RED('1')
 			time.sleep(0.2)
 			LED_RED('0')

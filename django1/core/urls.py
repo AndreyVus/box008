@@ -24,5 +24,7 @@ urlpatterns = [
 	path('add/', views.addItem),
 	path('del/', views.delItem),
 	path('edit/', views.editItem),
+	path('start/', views.start),
+	path('stop/', views.stop),
 	path('', views.home),
 ]
