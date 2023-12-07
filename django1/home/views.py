@@ -1,9 +1,7 @@
 from .models import db1, db2
 from django.shortcuts import render, redirect
-import subprocess
-import syslog
 import yaml
-p = None
+
 
 def einstellungen(request):
 	try:
@@ -18,7 +16,9 @@ def einstellungen(request):
 		except Exception as e:
 			item.Einstellungen = e
 		item.save()
-	return render(request, 'settings.html', {"Einstellungen": item.Einstellungen})
+	return render(request, 'settings.html', {
+		'Einstellungen': item.Einstellungen,
+	})
 
 
 def home(request):
@@ -28,7 +28,7 @@ def home(request):
 		if Tat == 'Berechtigen':
 			item.Berechtigen = request.POST['Wert'] == 'true'
 		elif Tat == 'Name':
-			item.Name = request.POST['Wert']
+			item.Name = request.POST['Wert'].replace(' ', '_')
 		elif Tat == 'Periode':
 			item.Periode = request.POST['Wert']
 		elif Tat == 'skript':
@@ -54,34 +54,9 @@ def editItem(request):
 	if request.method == 'GET':
 		Nr = request.GET['Nr']
 		item = db1.objects.get(id=Nr)
-		return render(request, 'editjob.html', {'Nr': Nr, 'Name': item.Name, 'skript': item.skript})
+		return render(request, 'editjob.html', {
+			'Nr': Nr,
+			'Name': item.Name,
+			'skript': item.skript,
+		})
 	#return redirect('/')
-
-
-def start(request):
-	global p
-	tasks_py = '/home/kbwiot/django1/tasks.py'
-	ans = db1.objects.filter(Berechtigen=True).values('Name', 'Periode', 'skript')
-	with open(tasks_py, 'w', encoding='utf-8') as f:
-		f.write('#!/usr/bin/python\rfrom time import sleep\rimport syslog, threading\rlock = threading.Lock()\r')
-		for a in ans:
-			f.write(f"\rdef task_{a['Name'].replace(' ', '_')}(Periode):\r\t")
-			f.write(a['skript'].replace('\r\n', '\r\t').replace('\t\r', ''))
-		f.write('\r# Threads für jede Aufgabe\rpool = [\r')
-		for a in ans:
-			f.write(f"\tthreading.Thread(target=task_{a['Name'].replace(' ', '_')}, args=({a['Periode']},)),\r")
-		f.write(']\r[t.start() for t in pool]\rwhile all([t.is_alive() for t in pool]):\r\tsleep(60)\r')
-		f.write("syslog.syslog(syslog.LOG_WARNING, 'Einige Threads wurden in tasks.py gestoppt.')")
-	p = subprocess.Popen(['/bin/python', tasks_py])
-	syslog.syslog(syslog.LOG_INFO, 'python tasks_py startet')
-	return redirect('/')
-
-
-def stop(request):
-	global p
-	if p:
-		p.kill()
-		p.wait()
-		p = None
-		syslog.syslog(syslog.LOG_INFO, 'python tasks_py stopped')
-	return redirect('/')
