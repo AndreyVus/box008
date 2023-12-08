@@ -72,10 +72,8 @@ def on_message(client, userdata, message):
 		else:
 			subprocess.run('systemctl restart wvdial', shell=True, stdout=subprocess.DEVNULL)
 
-
+FILE = '/etc/systemd/system/kbwio.service'
 def start():
-	FILE = '/etc/systemd/system/kbwio.service'
-
 	if not os.path.isfile(FILE):
 		with open(FILE, 'w') as f:
 			f.write('''[Unit]
@@ -86,6 +84,8 @@ After=network.target
 Type=simple
 WorkingDirectory=/home/kbwiot
 ExecStart=/home/kbwiot/KbwIO.py
+Restart=always
+RestartSec=5
 
 [Install]
 WantedBy=default.target
@@ -99,7 +99,7 @@ WantedBy=default.target
 def stop():
 	subprocess.run(['systemctl', 'stop', 'kbwio.service'])  # Stoppen Sie den Dienst
 	subprocess.run(['systemctl', 'disable', 'kbwio.service'])  # Deaktivieren Sie den Dienst
-	subprocess.run(['rm', '/etc/systemd/system/kbwio.service'])  # Löschen Sie die Dienstdatei
+	subprocess.run(['rm', FILE])  # Löschen Sie die Dienstdatei
 	subprocess.run(['systemctl', 'daemon-reload'])  # Neuladen der systemd-Konfiguration, um die Änderungen zu übernehmen
 
 
