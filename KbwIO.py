@@ -1,10 +1,10 @@
 #!/usr/bin/python
+from time import sleep
 import os
-import paho.mqtt.client as mqtt
+import requests
 import subprocess
 import sys
-import syslog
-import time
+import threading
 
 
 def DI(x):
@@ -56,22 +56,6 @@ def AI(x):
 	return float(ans) / 2816
 
 
-def on_connect(client, userdata, flags, rc):
-	client.subscribe('LED_VPN')
-
-
-def on_message(client, userdata, message):
-	m = f'{message.payload.decode()}'
-	LED_GREEN(m)
-	if wv:
-		if m == '1':
-			subprocess.run(
-				'if ping 1.1.1.1 -c 1 -W 5 -I wlan0 || ping 1.1.1.1 -c 1 -W 5 -I eth0; then systemctl stop wvdial; fi',
-				shell=True, stdout=subprocess.DEVNULL
-			)
-		else:
-			subprocess.run('systemctl restart wvdial', shell=True, stdout=subprocess.DEVNULL)
-
 FILE = '/etc/systemd/system/kbwio.service'
 def start():
 	if not os.path.isfile(FILE):
@@ -103,39 +87,49 @@ def stop():
 	subprocess.run(['systemctl', 'daemon-reload'])  # Neuladen der systemd-Konfiguration, um die Änderungen zu übernehmen
 
 
+def puls_blinker():
+	while True:
+		LED_RED('1')
+		sleep(0.2)
+		LED_RED('0')
+		sleep(1.8)
+
+
+def init():
+	for x in [18, 19, 20, 21, 500, 501, 502, 503]:  # DI
+		if not os.path.exists(f'/sys/class/gpio/gpio{x}/value'):
+			with open('/sys/class/gpio/export', 'w') as f:
+				f.write(str(x))
+		with open(f'/sys/class/gpio/gpio{x}/direction', 'w') as f:
+			f.write('in')
+	for x in [22, 23, 24, 25, 496, 497, 498, 499]:  # DO
+		if not os.path.exists(f'/sys/class/gpio/gpio{x}/value'):
+			with open('/sys/class/gpio/export', 'w') as f:
+				f.write(str(x))
+		with open(f'/sys/class/gpio/gpio{x}/direction', 'w') as f:
+			f.write('out')
+	# Skalierung #####################################
+	# 28160 raw = 10V --> faktor = 1/2816
+	with open('/sys/bus/iio/devices/iio:device0/in_voltage_sampling_frequency', 'w') as f:
+		f.write('15')
+
+
 def run():
-	try:
-		# init io ##########################################
-		for x in [18, 19, 20, 21, 500, 501, 502, 503]:  # DI
-			if not os.path.exists(f'/sys/class/gpio/gpio{x}/value'):
-				with open('/sys/class/gpio/export', 'w') as f:
-					f.write(str(x))
-			with open(f'/sys/class/gpio/gpio{x}/direction', 'w') as f:
-				f.write('in')
-		for x in [22, 23, 24, 25, 496, 497, 498, 499]:  # DO
-			if not os.path.exists(f'/sys/class/gpio/gpio{x}/value'):
-				with open('/sys/class/gpio/export', 'w') as f:
-					f.write(str(x))
-			with open(f'/sys/class/gpio/gpio{x}/direction', 'w') as f:
-				f.write('out')
-		# Skalierung #####################################
-		# 28160 raw = 10V --> faktor = 1/2816
-		with open('/sys/bus/iio/devices/iio:device0/in_voltage_sampling_frequency', 'w') as f:
-			f.write('15')
-		# mqtt-subscribe #################################
-		mqttc = mqtt.Client()
-		mqttc.on_connect = on_connect
-		mqttc.on_message = on_message
-		mqttc.connect_async('localhost')
-		mqttc.loop_start()
-		# puls blinker ###################################
-		while True:
-			LED_RED('1')
-			time.sleep(0.2)
-			LED_RED('0')
-			time.sleep(1.8)
-	except Exception as e:
-		syslog.syslog(syslog.LOG_WARNING, f'KbwIO: {type(e)}: e')
+	# blinker und vpn-check
+	threading.Thread(target=puls_blinker).start()
+	while True:
+		sleep(60)
+		if 200 == requests.get('http://10.8.0.1:8055', timeout=5).status_code:
+			LED_GREEN(1)
+			if wv:
+				subprocess.run(
+					'if ping 1.1.1.1 -c 1 -W 5 -I wlan0 || ping 1.1.1.1 -c 1 -W 5 -I eth0; then systemctl stop wvdial; fi',
+					shell=True, stdout=subprocess.DEVNULL
+				)
+		else:
+			LED_GREEN(0)
+			if wv:
+				subprocess.run('systemctl restart wvdial', shell=True, stdout=subprocess.DEVNULL)
 
 
 if __name__ == '__main__':
@@ -146,4 +140,5 @@ if __name__ == '__main__':
 	elif 'stop' in args:
 		stop()
 	else:
+		init()
 		run()
