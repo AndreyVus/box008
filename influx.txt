@@ -26,3 +26,8 @@ show grants for telegraf
 show grants for grafana
 
 quit
+
+##########################
+docker exec -it tig-influxdb-1 /bin/bash
+
+curl -XPOST "http://localhost:8086/query" --data-urlencode "q=CREATE DATABASE telemetry WITH DURATION 1h"

@@ -120,20 +120,20 @@ def run():
 	while True:
 		sleep(60)
 		if 200 == requests.get('http://10.8.0.1:8055', timeout=5).status_code:
-			LED_GREEN(1)
+			LED_GREEN('1')
 			if wv:
 				subprocess.run(
 					'if ping 1.1.1.1 -c 1 -W 5 -I wlan0 || ping 1.1.1.1 -c 1 -W 5 -I eth0; then systemctl stop wvdial; fi',
 					shell=True, stdout=subprocess.DEVNULL
 				)
 		else:
-			LED_GREEN(0)
+			LED_GREEN('0')
 			if wv:
 				subprocess.run('systemctl restart wvdial', shell=True, stdout=subprocess.DEVNULL)
 
 
 if __name__ == '__main__':
-	wv = os.path.isfile('/etc/wvdial.conf')
+	wv = os.path.isfile('/etc/systemd/system/wvdial.service')
 	args = sys.argv[1:]
 	if 'start' in args:
 		start()

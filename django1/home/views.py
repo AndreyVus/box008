@@ -2,6 +2,7 @@ from .models import db1, db2
 from django.shortcuts import render, redirect
 import os
 import subprocess
+import tempfile
 import yaml
 skript_path = '/home/kbwiot/django1/tasks/'
 
@@ -86,7 +87,11 @@ def home(request):
 
 
 def addItem(request):
-	db1.objects.create(Name='new job')
+	# Erstellt einen zufälligen Dateinamen
+	temp_datei = tempfile.NamedTemporaryFile(dir=skript_path, delete=True)
+	db1.objects.create(Name=os.path.basename(temp_datei.name))
+	# Schließt die Datei
+	temp_datei.close()
 	return redirect('/')
 
 
@@ -101,9 +106,9 @@ def editItem(request):
 	if request.method == 'GET':
 		Nr = request.GET['Nr']
 		item = db1.objects.get(id=Nr)
-		item.Berechtigen = False
-		item.save()
-		stop_skript(item)
+		# item.Berechtigen = False
+		# item.save()
+		# stop_skript(item)
 		return render(request, 'editjob.html', {
 			'Nr': Nr,
 			'Name': item.Name,

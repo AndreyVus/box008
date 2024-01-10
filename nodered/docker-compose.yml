@@ -1,6 +1,8 @@
+version: '3.7'
 services:
   nodered:
     image: nodered/node-red
+    container_name: nodered1
     environment:
       - TZ=Europe/Berlin
     ports:
@@ -9,6 +11,29 @@ services:
       - node-red-net
     volumes:
       - node-red-data:/data
+      - /sys/devices/platform/leds/leds/LED1/brightness:/data/LED1
+      - /sys/devices/platform/leds/leds/LED2/brightness:/data/LED2
+      - /sys/devices/platform/leds/leds/BUZZER/brightness:/data/BUZZER
+#      - /sys/bus/iio\:device0/in_voltage0_raw:/data/AI0
+#      - /sys/bus/iio\:device0/in_voltage1_raw:/data/AI1
+#      - /sys/bus/iio\:device0/in_voltage2_raw:/data/AI2
+#      - /sys/bus/iio\:device0/in_voltage3_raw:/data/AI3
+      - /sys/class/gpio/gpio18/value:/data/DI0
+      - /sys/class/gpio/gpio19/value:/data/DI1
+      - /sys/class/gpio/gpio20/value:/data/DI2
+      - /sys/class/gpio/gpio21/value:/data/DI3
+      - /sys/class/gpio/gpio22/value:/data/DO0
+      - /sys/class/gpio/gpio23/value:/data/DO1
+      - /sys/class/gpio/gpio24/value:/data/DO2
+      - /sys/class/gpio/gpio25/value:/data/DO3
+      - /sys/class/gpio/gpio500/value:/data/DIO0_in
+      - /sys/class/gpio/gpio501/value:/data/DIO1_in
+      - /sys/class/gpio/gpio502/value:/data/DIO2_in
+      - /sys/class/gpio/gpio503/value:/data/DIO3_in
+      - /sys/class/gpio/gpio496/value:/data/DIO0_out
+      - /sys/class/gpio/gpio497/value:/data/DIO1_out
+      - /sys/class/gpio/gpio498/value:/data/DIO2_out
+      - /sys/class/gpio/gpio499/value:/data/DIO3_out
     restart: on-failure
 volumes:
   node-red-data:

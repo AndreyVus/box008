@@ -1,1 +1,1 @@
-tar --exclude={'django1/venv','__pycache__'} -c --use-compress-program=pigz -f home-kbw.tgz django1/ django1.sh KbwIO.py
+tar --exclude={'django1/venv','__pycache__'} -c --use-compress-program=pigz -f home-kbw.tgz backup.sh django1/ infgra/ nodered/ django1.sh KbwIO.py
