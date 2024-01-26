@@ -1,4 +1,3 @@
-from datetime import datetime
 from influxdb import InfluxDBClient
 from time import sleep
 import requests

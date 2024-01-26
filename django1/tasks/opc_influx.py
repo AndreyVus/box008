@@ -3,7 +3,7 @@ node = {
 	'Tankniveau'  : 3,
 	'Volumenstrom': 4,
 }
-opc = 'opc.tcp://192.168.10.123:4840'
+opc = 'opc.tcp://192.168.123.100:4840'
 db_name = 'telemetry'
 measurement = 'opc'
 from influxdb import InfluxDBClient

@@ -6,12 +6,21 @@ wifi = {
 	'Schi01'   : 'FjQUFOijPB4=*G6ktgEkXqWboPlDL84vaAw==*QgyI5do8kED4Magjo4aeBg==*LbKgdhhmUF59D8zMUDpP0A==',
 	'matrixSCI': 'mE3nG0o+V7feCyAxDxqVgjQ=*jummKSJRpzClAblFqzjhKA==*H3mj1PZBjvawqwSt2AlgXQ==*RUWfuHFYSh9xMj7xaJZtrg==',
 }
-from time import sleep
-import cryptocode
-import re
-import subprocess
-import sys
-Periode = int(sys.argv[1])
+
+
+while True:
+	try:
+		import re           # 1
+		import syslog       # 2
+		import subprocess   # 3
+		import cryptocode
+		break
+	except Exception as err:
+		e2 = re.findall("'(.+)'", str(err))[0]
+		syslog.syslog(syslog.LOG_WARNING, f'{err}. Install {e2}')
+		subprocess.run(['pip', 'install', e2])
+
+
 def decode(passw):
 	if len(passw) > 20:
 		passw = cryptocode.decrypt(passw, 'Kbwiot2022!')
@@ -30,18 +39,17 @@ def hat(datei, ssid, passw):
 			return pat.findall(file.read())
 	except:
 		return []
-while 1:
-	#with lock:
-	for datei in set(nmcli_c()).difference(set(wifi.keys())):
+
+
+for datei in set(nmcli_c()).difference(set(wifi.keys())):
+	nmcli_del(datei)
+for datei in nmcli_c():
+	flag = True
+	for ssid, passw in wifi.items():
+		if hat(datei, ssid, decode(passw)):
+			flag = False
+			break
+	if flag:
 		nmcli_del(datei)
-	for datei in nmcli_c():
-		flag = True
-		for ssid, passw in wifi.items():
-			if hat(datei, ssid, decode(passw)):
-				flag = False
-				break
-		if flag:
-			nmcli_del(datei)
-	for ssid in set(wifi.keys()).difference(set(nmcli_c())):
-		nmcli_add(ssid, decode(wifi[ssid]))
-	sleep(Periode)
+for ssid in set(wifi.keys()).difference(set(nmcli_c())):
+	nmcli_add(ssid, decode(wifi[ssid]))

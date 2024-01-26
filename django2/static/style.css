@@ -1,0 +1,12 @@
+*{font-family:Arial,Helvetica,sans-serif;font-size:1em;}
+a,button{
+	cursor:pointer;padding:0.5em;
+	border-radius:0.5em;border:1px solid #7B7979;
+	color:white;background-color:#00ADEF;
+	text-decoration:none;
+	box-shadow: 1px 1px 5px #000;
+}
+a:hover,button:hover{filter:brightness(110%);border:1px solid white;}
+body,form,div{display:grid;gap:0.5em;text-align:center;}
+textarea{border:1px solid #7B7979;font-family:monospace;}
+.c{align-items:center;}
