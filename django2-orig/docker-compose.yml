@@ -10,7 +10,7 @@ services:
         target: /tasks_db.sqlite3
     ports:
       - 8000:8000
-    image: django2
+    image: andreyvus/django2
     container_name: django2
     command: python manage.py runserver 0:8000
 #pip freeze > requirements.txt

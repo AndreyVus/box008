@@ -1,1 +1,0 @@
-docker run --name django2 -p 8000:8000 -d python-django-app
