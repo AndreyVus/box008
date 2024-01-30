@@ -12,9 +12,10 @@ services:
       - 8000:8000
     image: andreyvus/django2
     container_name: django2
-    command: python manage.py runserver 0:8000
+#    command: python manage.py runserver 0:8000
 #pip freeze > requirements.txt
 #docker-compose build
+#docker push andreyvus/django2
 #docker-compose up -d
 #docker logs django2
 #docker exec -it django2 bash
@@ -22,6 +23,3 @@ services:
 #docker rm django2
 #docker rmi django2
 #docker system prune
-
-#docker volume create portainer_data
-#docker run -d -p 9000:9000 --name portainer --restart=always -v /var/run/docker.sock:/var/run/docker.sock -v portainer_data:/data portainer/portainer-ce:latest
