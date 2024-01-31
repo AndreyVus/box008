@@ -1,1 +1,1 @@
-tar -c --use-compress-program=pigz -f home-kbw.tgz backup.sh django2/ infgra/ nodered/ KbwIO.py tasks_db.sqlite3
+tar -c --use-compress-program=pigz -f docker-apps.tgz backup.sh docker-apps/
